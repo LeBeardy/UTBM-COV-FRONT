@@ -1,0 +1,7 @@
+{
+  "name": "UTBM-COV-FRONT",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

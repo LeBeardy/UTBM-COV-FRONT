@@ -1,32 +1,37 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>articles</ion-title>
+    <ion-title>Article's list</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <div style="text-align: left">
+      <Ion-Button color="primary" (click)="fetchArticle()" > Fetch articles
+        <ion-spinner id="loader"paused=true name="dots"></ion-spinner>
+      </Ion-Button>
+      <Ion-Button color="primary" (click)="generateLDA()" > Generate LDA model
+        <ion-spinner id="loaderLDA"paused=true name="dots"></ion-spinner>
+      </Ion-Button>
+  </div>
+  <p-table #dt [columns]="cols" [value]="articles" [paginator]="true" [rows]="15" >
 
-  <p-table #tt [value]="articles" [paginator]="true" [rows]="15">
     <ng-template pTemplate="caption">
-       <i class="pi pi-search" style="margin:4px 4px 0 0"></i>
-       <input type="text" pInputText size="50" placeholder="Global Filter" (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
-   </ng-template>
-      <ng-template pTemplate="header">
-          <tr>
-              <th style="width: 5%">pmid</th>
-              <th style="width: 85%">title</th>
-              <th style="width: 5%">type</th>
-              <th style="width: 5%"> </th>
-          </tr>
+      <div style="text-align: right">
+          <ion-icon name="search-circle-outline" style="font-size: 1.5em"></ion-icon>
+          <input type="text" pInputText size="50" placeholder="Global Filter" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+      </div>
+    </ng-template>
+      <ng-template pTemplate="header" let-columns>
+        <th *ngFor="let col of columns" style="width: {{col.width}};">
+            {{col.header}}
+        </th>
       </ng-template>
-      <ng-template pTemplate="body" let-article>
+      <ng-template pTemplate="body" let-article let-columns="columns">
           <tr>
-              <td>{{article.pmid}}</td>
-              <td>{{article.title}}</td>
-              <td *ngIf="article.content_full ===''; else type_abs">résumé</td>
-              <ng-template #type_abs><td>complet</td></ng-template>
-
-               <td><Ion-Button color="primary"><ion-icon name="document-text-outline"></ion-icon></Ion-Button></td>
+            <td *ngFor="let col of columns">
+                {{article[col.field]}}
+              </td>
+               <td><Ion-Button color="primary" (click)="getArticleDet(article.pmid)" ><ion-icon name="document-text-outline"></ion-icon></Ion-Button></td>
           </tr>
       </ng-template>
   </p-table>

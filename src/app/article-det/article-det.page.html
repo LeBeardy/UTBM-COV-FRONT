@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      <Ion-Button color="primary" (click)="retourListe()" ><ion-icon name="arrow-back-outline"></ion-icon></Ion-Button>
+      Article's details
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <Ion-Col *ngIf="article" name="article" size="9">
+        <h1><Ion-Badge color="primary">{{article.type}} </Ion-Badge>{{article.title}}   </h1>
+
+        <div *ngIf ="article.content_abstract">
+            {{article.content_abstract}}
+        </div>
+
+        <div *ngIf ="article.content_full">
+            {{article.content_full}}
+        </div>
+      </Ion-Col>
+      <Ion-Col name="recommendations" size="3">
+        <Ion-Button color="primary" (click)="afficherRecommendations()" >charger les recommendations
+          <ion-spinner id="loader"paused=true name="dots"></ion-spinner>
+        </Ion-Button>
+        <div >
+        <ion-card  *ngFor="let rec of recommendations">
+          <ng-container *ngIf="rec.pmid != article.pmid">
+            <ion-card-header>
+              <ion-card-title class="article_title">
+                <Ion-Badge color="primary">{{rec.type}} </Ion-Badge>
+                <a href="article-det/{{rec.pmid}}">{{rec.title}}</a>
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+            {{rec.journal_pub}} , {{rec.date_pub}}
+            </ion-card-content>
+          </ng-container>
+        </ion-card>
+        </div>
+      </Ion-Col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

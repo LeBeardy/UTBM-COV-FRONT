@@ -7,10 +7,8 @@
 <ion-content>
   <div style="text-align: left">
       <Ion-Button color="primary" (click)="fetchArticle()" > Fetch articles
-        <ion-spinner id="loader"paused=true name="dots"></ion-spinner>
       </Ion-Button>
       <Ion-Button color="primary" (click)="generateLDA()" > Generate LDA model
-        <ion-spinner id="loaderLDA"paused=true name="dots"></ion-spinner>
       </Ion-Button>
   </div>
   <p-table #dt [columns]="cols" [value]="articles" [paginator]="true" [rows]="15" >

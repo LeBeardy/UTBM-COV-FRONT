@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { Inject }  from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { ToastController} from '@ionic/angular';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-articles',
@@ -13,13 +14,16 @@ import { ToastController} from '@ionic/angular';
 export class ArticlesPage implements OnInit {
 
   articles: any[];
-  cols: any[]
+  cols: any[];
+  loadingArticle: any;
+  loadingLDA: any;
 
   constructor(
     @Inject(DOCUMENT) document,
     private articlesService: ArticlesProviderService,
     private router: Router,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    public loadingController: LoadingController
   ) { }
 
   ngOnInit() {
@@ -36,10 +40,10 @@ export class ArticlesPage implements OnInit {
  }
 
  fetchArticle(){
-   document.getElementById('loader').setAttribute("paused", false);
+   this.presentLoading('Retrieving the datas',  this.loadingArticle)
    this.articlesService.generateArticle().subscribe(data => {
      this.articles = data;
-     document.getElementById('loader').setAttribute("paused", true);
+     this.loadingArticle.dismiss();
      const toast = this.toastCtrl.create({
                message: 'Articles fetched',
                duration: 2000,
@@ -51,10 +55,10 @@ export class ArticlesPage implements OnInit {
  }
 
  generateLDA(){
-   document.getElementById('loaderLDA').setAttribute("paused", false);
+   this.presentLoading('Generating the LDA model',  this.loadingLDA)
    this.articlesService.generateLDA().subscribe(data => {
      console.log(data);
-     document.getElementById('loaderLDA').setAttribute("paused", true);
+   this.loadingLDA.dismiss();
      const toast = this.toastCtrl.create({
                message: data.message,
                duration: 2000,
@@ -65,4 +69,13 @@ export class ArticlesPage implements OnInit {
    });
  }
 
+ async presentLoading( message: any, loading: any) {
+  loading = await this.loadingController.create({
+    cssClass: 'my-custom-class',
+    message: message,
+  });
+  await loading.present();
+
+  const { role, data } = await loading.onDidDismiss();
+ }
 }

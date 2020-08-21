@@ -4,6 +4,7 @@ import {ArticlesProviderService} from '../_services/articles-provider.service';
 import { Inject }  from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Router } from "@angular/router";
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-article-det',
@@ -13,13 +14,15 @@ import { Router } from "@angular/router";
 export class ArticleDetPage implements OnInit {
 
   article: any;
+  loading: any;
 
   recommendations: any;
   constructor(
     @Inject(DOCUMENT) document,
     public route: ActivatedRoute,
     private articlesService: ArticlesProviderService,
-    private router: Router
+    private router: Router,
+    public loadingController: LoadingController
   ) { }
 
   ngOnInit() {
@@ -30,16 +33,26 @@ export class ArticleDetPage implements OnInit {
   }
 
   afficherRecommendations(){
-    document.getElementById('loader').setAttribute("paused", false);
+    this.presentLoading();
+
     this.articlesService.getRecommendations(this.article.pmid).subscribe(data => {
       this.recommendations = data;
-      console.log(data);
-      document.getElementById('loader').setAttribute("paused", true);
+      this.loading.dismiss();
     });
   }
 
   retourListe() {
    this.router.navigate([`tabs/articles`]);
  }
+
+ async presentLoading() {
+  this.loading = await this.loadingController.create({
+    cssClass: 'my-custom-class',
+    message: 'Please wait...',
+  });
+  await this.loading.present();
+
+  const { role, data } = await this.loading.onDidDismiss();
+}
 
 }

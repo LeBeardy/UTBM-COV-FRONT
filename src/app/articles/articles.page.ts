@@ -40,7 +40,7 @@ export class ArticlesPage implements OnInit {
  }
 
  fetchArticle(){
-   this.presentLoading('Retrieving the datas',  this.loadingArticle)
+   this.presentLoadingArticle()
    this.articlesService.generateArticle().subscribe(data => {
      this.articles = data;
      this.loadingArticle.dismiss();
@@ -55,7 +55,7 @@ export class ArticlesPage implements OnInit {
  }
 
  generateLDA(){
-   this.presentLoading('Generating the LDA model',  this.loadingLDA)
+   this.presentLoadingLDA()
    this.articlesService.generateLDA().subscribe(data => {
      console.log(data);
    this.loadingLDA.dismiss();
@@ -69,13 +69,23 @@ export class ArticlesPage implements OnInit {
    });
  }
 
- async presentLoading( message: any, loading: any) {
-  loading = await this.loadingController.create({
+ async presentLoadingArticle() {
+  this.loadingArticle = await this.loadingController.create({
     cssClass: 'my-custom-class',
-    message: message,
+    message: 'Retrieving the data',
   });
-  await loading.present();
+  await this.loadingArticle.present();
 
-  const { role, data } = await loading.onDidDismiss();
+  const { role, data } = await this.loadingArticle.onDidDismiss();
+ }
+
+ async presentLoadingLDA() {
+  this.loadingLDA = await this.loadingController.create({
+    cssClass: 'my-custom-class',
+    message: 'Generating the LDA model',
+  });
+  await this.loadingLDA.present();
+
+  const { role, data } = await this.loadingLDA.onDidDismiss();
  }
 }
